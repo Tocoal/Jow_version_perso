@@ -89,6 +89,7 @@ class RecipeEditorViewModel(
     val suggestions: StateFlow<List<String>> = _suggestions.asStateFlow()
 
     private var nextKey = 1
+    private var originalRecipe: RecipeEntity? = null
 
     init {
         if (recipeId <= 0L) {
@@ -98,6 +99,7 @@ class RecipeEditorViewModel(
                 val recipe = recipeRepository.observeRecipe(recipeId).first()
                 val ingredients = recipeRepository.getIngredients(recipeId)
                 if (recipe != null) {
+                    originalRecipe = recipe
                     val lines = ingredients.mapIndexed { index, detail ->
                         IngredientLineState(
                             key = index,
@@ -180,7 +182,7 @@ class RecipeEditorViewModel(
         val current = _state.value
         if (current.name.isBlank()) return
         viewModelScope.launch {
-            val recipe = RecipeEntity(
+            val recipe = (originalRecipe ?: RecipeEntity(name = "")).copy(
                 id = if (recipeId > 0) recipeId else 0,
                 name = current.name.trim(),
                 description = current.description.trim(),

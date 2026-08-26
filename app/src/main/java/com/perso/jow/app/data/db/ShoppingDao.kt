@@ -3,6 +3,7 @@ package com.perso.jow.app.data.db
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
@@ -30,6 +31,7 @@ interface ShoppingDao {
     @Query("DELETE FROM shopping_session_recipes WHERE sessionId = :sessionId")
     suspend fun clearSessionRecipes(sessionId: Long)
 
+    @Transaction
     @Query("SELECT * FROM shopping_session_recipes WHERE sessionId = :sessionId")
     fun observeSessionRecipes(sessionId: Long): Flow<List<ShoppingSessionRecipeDetail>>
 
@@ -45,6 +47,7 @@ interface ShoppingDao {
     @Query("DELETE FROM shopping_list_items WHERE sessionId = :sessionId")
     suspend fun clearListItems(sessionId: Long)
 
+    @Transaction
     @Query("SELECT * FROM shopping_list_items WHERE sessionId = :sessionId ORDER BY id")
     fun observeListItems(sessionId: Long): Flow<List<ShoppingListItemDetail>>
 

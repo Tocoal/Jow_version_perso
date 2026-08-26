@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
@@ -34,9 +35,11 @@ interface RecipeDao {
     @Query("UPDATE recipes SET isFavorite = :isFavorite WHERE id = :id")
     suspend fun setFavorite(id: Long, isFavorite: Boolean)
 
+    @Transaction
     @Query("SELECT * FROM recipe_ingredients WHERE recipeId = :recipeId ORDER BY position")
     fun observeIngredientsForRecipe(recipeId: Long): Flow<List<RecipeIngredientDetail>>
 
+    @Transaction
     @Query("SELECT * FROM recipe_ingredients WHERE recipeId = :recipeId ORDER BY position")
     suspend fun getIngredientsForRecipe(recipeId: Long): List<RecipeIngredientDetail>
 
